@@ -53,7 +53,6 @@ class TextClassificationDataset(Dataset):
         return torch.tensor(ids, dtype=torch.long), torch.tensor(self.labels[idx], dtype=torch.long)
 
 
-# max_len chosen per dataset to reflect short / medium / long regimes
 DATASET_CONFIG = {
     "agnews": {"hf_name": "fancyzhx/ag_news",  "max_len": 40,  "num_classes": 4},
     "imdb":   {"hf_name": "stanfordnlp/imdb",  "max_len": 200, "num_classes": 2},
@@ -61,10 +60,7 @@ DATASET_CONFIG = {
 }
 
 
-def load_dataset_splits(dataset_name, batch_size=32, max_vocab_size=20000):
-    """
-    Returns: train_loader, test_loader, vocab_size, num_classes
-    """
+def load_dataset_splits(dataset_name, batch_size=32, max_vocab_size=20000, limit=None):
     if dataset_name not in DATASET_CONFIG:
         raise ValueError(f"Unknown dataset: {dataset_name}")
 
@@ -75,6 +71,12 @@ def load_dataset_splits(dataset_name, batch_size=32, max_vocab_size=20000):
     train_labels = raw["train"]["label"]
     test_texts = raw["test"]["text"]
     test_labels = raw["test"]["label"]
+
+    if limit is not None:
+        train_texts = train_texts[:limit]
+        train_labels = train_labels[:limit]
+        test_texts = test_texts[:max(limit // 5, 50)]
+        test_labels = test_labels[:max(limit // 5, 50)]
 
     vocab = build_vocab(train_texts, max_vocab_size=max_vocab_size)
 
@@ -88,8 +90,7 @@ def load_dataset_splits(dataset_name, batch_size=32, max_vocab_size=20000):
 
 
 if __name__ == "__main__":
-    # Quick manual test -- run this file directly to check a dataset loads
-    train_loader, test_loader, vocab_size, num_classes = load_dataset_splits("agnews", batch_size=8)
+    train_loader, test_loader, vocab_size, num_classes = load_dataset_splits("agnews", batch_size=8, limit=500)
     batch_x, batch_y = next(iter(train_loader))
     print("vocab_size:", vocab_size)
     print("num_classes:", num_classes)

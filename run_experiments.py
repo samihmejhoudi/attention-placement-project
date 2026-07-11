@@ -101,9 +101,9 @@ def train_one_variant(attention_position, dataset_name, seed,
     }
 
 
-def run_all(dataset_name, seeds, epochs=3, tag=None):
+def run_all(dataset_name, seeds, epochs=3, tag=None, limit=None):
     print(f"Loading dataset '{dataset_name}'...")
-    train_loader, test_loader, vocab_size, num_classes = load_dataset_splits(dataset_name)
+    train_loader, test_loader, vocab_size, num_classes = load_dataset_splits(dataset_name, limit=limit)
 
     results = []
     for position in ATTENTION_POSITIONS:
@@ -137,6 +137,9 @@ if __name__ == "__main__":
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--tag", type=str, default=None,
                          help="optional label to add to the results filename, e.g. 'test' or 'final'")
+    parser.add_argument("--limit", type=int, default=None,
+                         help="use only this many training examples, for FAST sanity checks only "
+                              "(do not use --limit for your real reported results)")
     args = parser.parse_args()
 
-    run_all(args.dataset, args.seeds, epochs=args.epochs, tag=args.tag)
+    run_all(args.dataset, args.seeds, epochs=args.epochs, tag=args.tag, limit=args.limit)
