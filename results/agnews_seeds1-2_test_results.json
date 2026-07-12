@@ -4,9 +4,14 @@
     "dataset": "agnews",
     "seed": 1,
     "test_accuracy": 0.37,
-    "train_time_sec": 0.96,
-    "inference_time_sec": 0.0278,
+    "train_time_sec": 1.25,
+    "inference_time_sec": 0.0293,
     "num_parameters": 988613,
+    "epoch_losses": [
+      1.2202,
+      0.8701,
+      0.8077
+    ],
     "predictions": [
       3,
       3,
@@ -217,9 +222,14 @@
     "dataset": "agnews",
     "seed": 2,
     "test_accuracy": 0.37,
-    "train_time_sec": 0.9,
-    "inference_time_sec": 0.0158,
+    "train_time_sec": 1.08,
+    "inference_time_sec": 0.0192,
     "num_parameters": 988613,
+    "epoch_losses": [
+      1.1721,
+      0.8901,
+      0.8139
+    ],
     "predictions": [
       3,
       3,
@@ -431,8 +441,13 @@
     "seed": 1,
     "test_accuracy": 0.37,
     "train_time_sec": 1.05,
-    "inference_time_sec": 0.0195,
+    "inference_time_sec": 0.0221,
     "num_parameters": 988549,
+    "epoch_losses": [
+      1.2283,
+      0.8535,
+      0.7966
+    ],
     "predictions": [
       3,
       3,
@@ -643,9 +658,14 @@
     "dataset": "agnews",
     "seed": 2,
     "test_accuracy": 0.37,
-    "train_time_sec": 1.06,
-    "inference_time_sec": 0.0263,
+    "train_time_sec": 1.23,
+    "inference_time_sec": 0.0559,
     "num_parameters": 988549,
+    "epoch_losses": [
+      1.2318,
+      0.8587,
+      0.8081
+    ],
     "predictions": [
       3,
       3,
@@ -856,9 +876,14 @@
     "dataset": "agnews",
     "seed": 1,
     "test_accuracy": 0.37,
-    "train_time_sec": 1.28,
-    "inference_time_sec": 0.0225,
+    "train_time_sec": 1.51,
+    "inference_time_sec": 0.0236,
     "num_parameters": 988613,
+    "epoch_losses": [
+      1.0232,
+      0.8285,
+      0.8006
+    ],
     "predictions": [
       3,
       3,
@@ -1069,9 +1094,14 @@
     "dataset": "agnews",
     "seed": 2,
     "test_accuracy": 0.37,
-    "train_time_sec": 1.31,
-    "inference_time_sec": 0.0272,
+    "train_time_sec": 1.37,
+    "inference_time_sec": 0.029,
     "num_parameters": 988613,
+    "epoch_losses": [
+      1.0105,
+      0.8382,
+      0.7901
+    ],
     "predictions": [
       3,
       3,

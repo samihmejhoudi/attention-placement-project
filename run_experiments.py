@@ -71,15 +71,23 @@ def train_one_variant(attention_position, dataset_name, seed,
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     criterion = nn.CrossEntropyLoss()
 
+    epoch_losses = []  # diagnostic safety net -- not plotted, just saved for debugging if needed
+
     start_time = time.time()
     for epoch in range(epochs):
         model.train()
+        total_loss = 0.0
+        num_batches = 0
         for x, y in train_loader:
             optimizer.zero_grad()
             logits = model(x)
             loss = criterion(logits, y)
             loss.backward()
             optimizer.step()
+            total_loss += loss.item()
+            num_batches += 1
+        avg_epoch_loss = total_loss / num_batches
+        epoch_losses.append(avg_epoch_loss)
     train_time = time.time() - start_time
 
     inf_start = time.time()
@@ -96,6 +104,7 @@ def train_one_variant(attention_position, dataset_name, seed,
         "train_time_sec": round(train_time, 2),
         "inference_time_sec": round(inf_time, 4),
         "num_parameters": num_params,
+        "epoch_losses": [round(l, 4) for l in epoch_losses],
         "predictions": preds,
         "labels": labels,
     }
