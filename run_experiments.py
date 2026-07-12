@@ -7,6 +7,8 @@ times -- once per attention position -- keeping everything else fixed
 (same dataset, same seed, same hyperparameters). This is the controlled
 experiment your paper reports in the Results table.
 
+Automatically uses GPU (e.g. on Colab) if available, otherwise CPU.
+
 Usage:
     python run_experiments.py --dataset agnews --seeds 1 2 3
 """
@@ -18,7 +20,6 @@ import os
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
 
 import time
 
@@ -26,6 +27,10 @@ from model_base import CNNLSTMAttention
 from data_loader import load_dataset_splits
 
 ATTENTION_POSITIONS = ["before_cnn", "between", "after_lstm"]
+
+# Automatically uses GPU if available (e.g. on Colab), falls back to CPU
+# otherwise (e.g. on your local machine) -- no manual switching needed.
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def set_seed(seed):
@@ -40,12 +45,13 @@ def evaluate(model, data_loader):
     all_preds, all_labels = [], []
     with torch.no_grad():
         for x, y in data_loader:
+            x, y = x.to(DEVICE), y.to(DEVICE)
             logits = model(x)
             preds = torch.argmax(logits, dim=1)
             correct += (preds == y).sum().item()
             total += y.size(0)
-            all_preds.extend(preds.tolist())
-            all_labels.extend(y.tolist())
+            all_preds.extend(preds.cpu().tolist())
+            all_labels.extend(y.cpu().tolist())
     accuracy = correct / total
     return accuracy, all_preds, all_labels
 
@@ -66,7 +72,7 @@ def train_one_variant(attention_position, dataset_name, seed,
         lstm_hidden=128,
         num_classes=num_classes,
         attention_position=attention_position,
-    )
+    ).to(DEVICE)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     criterion = nn.CrossEntropyLoss()
@@ -79,6 +85,7 @@ def train_one_variant(attention_position, dataset_name, seed,
         total_loss = 0.0
         num_batches = 0
         for x, y in train_loader:
+            x, y = x.to(DEVICE), y.to(DEVICE)
             optimizer.zero_grad()
             logits = model(x)
             loss = criterion(logits, y)
@@ -111,6 +118,7 @@ def train_one_variant(attention_position, dataset_name, seed,
 
 
 def run_all(dataset_name, seeds, epochs=3, tag=None, limit=None):
+    print(f"Using device: {DEVICE}")
     print(f"Loading dataset '{dataset_name}'...")
     train_loader, test_loader, vocab_size, num_classes = load_dataset_splits(dataset_name, limit=limit)
 
@@ -126,9 +134,6 @@ def run_all(dataset_name, seeds, epochs=3, tag=None, limit=None):
             results.append(result)
 
     os.makedirs("results", exist_ok=True)
-    # filename always includes the seed range, plus an optional tag,
-    # so a small test run (e.g. seeds 1 2) never overwrites a full
-    # final run (e.g. seeds 1 2 3 4 5) on the same dataset
     seed_str = "-".join(str(s) for s in seeds)
     suffix = f"_{tag}" if tag else ""
     out_path = f"results/{dataset_name}_seeds{seed_str}{suffix}_results.json"
