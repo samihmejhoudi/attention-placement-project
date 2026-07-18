@@ -11,7 +11,7 @@ Reads a results JSON file (produced by run_experiments.py) and computes:
     - Parameter count and timing summary
 
 Usage:
-    python analyze_results.py --file results/agnews_seeds1-2-3-4-5_final_results.json
+    python analyze_results.py file results/agnews_seeds1-2-3-4-5_final_results.json
 """
 
 import argparse
