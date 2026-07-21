@@ -8,6 +8,7 @@ Placement in CNN-LSTM Architectures"**
 Samih Mejhoudi, supervised by Kuo-Kun Tseng
 School of Computer Science and Technology, Harbin Institute of Technology, Shenzhen
 
+📄 [Read the full paper (PDF)](Attention-Is-All-You-Need-But-Where.pdf)
 ---
 
 ## What this project does
